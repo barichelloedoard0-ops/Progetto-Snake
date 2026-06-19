@@ -1,0 +1,70 @@
+C:\Users\ebarichello\Desktop\CsharpProjects\TestProject\bin\Debug\net9.0-windows\TestProject.exe
+C:\Users\ebarichello\Desktop\CsharpProjects\TestProject\bin\Debug\net9.0-windows\TestProject.deps.json
+C:\Users\ebarichello\Desktop\CsharpProjects\TestProject\bin\Debug\net9.0-windows\TestProject.runtimeconfig.json
+C:\Users\ebarichello\Desktop\CsharpProjects\TestProject\bin\Debug\net9.0-windows\TestProject.dll
+C:\Users\ebarichello\Desktop\CsharpProjects\TestProject\bin\Debug\net9.0-windows\TestProject.pdb
+C:\Users\ebarichello\Desktop\CsharpProjects\TestProject\bin\Debug\net9.0-windows\System.Data.SQLite.dll
+C:\Users\ebarichello\Desktop\CsharpProjects\TestProject\obj\Debug\net9.0-windows\TestProject.csproj.AssemblyReference.cache
+C:\Users\ebarichello\Desktop\CsharpProjects\TestProject\obj\Debug\net9.0-windows\TestProject.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\ebarichello\Desktop\CsharpProjects\TestProject\obj\Debug\net9.0-windows\TestProject.AssemblyInfoInputs.cache
+C:\Users\ebarichello\Desktop\CsharpProjects\TestProject\obj\Debug\net9.0-windows\TestProject.AssemblyInfo.cs
+C:\Users\ebarichello\Desktop\CsharpProjects\TestProject\obj\Debug\net9.0-windows\TestProject.csproj.CoreCompileInputs.cache
+C:\Users\ebarichello\Desktop\CsharpProjects\TestProject\obj\Debug\net9.0-windows\TestProj.121896E9.Up2Date
+C:\Users\ebarichello\Desktop\CsharpProjects\TestProject\obj\Debug\net9.0-windows\TestProject.dll
+C:\Users\ebarichello\Desktop\CsharpProjects\TestProject\obj\Debug\net9.0-windows\refint\TestProject.dll
+C:\Users\ebarichello\Desktop\CsharpProjects\TestProject\obj\Debug\net9.0-windows\TestProject.pdb
+C:\Users\ebarichello\Desktop\CsharpProjects\TestProject\obj\Debug\net9.0-windows\TestProject.genruntimeconfig.cache
+C:\Users\ebarichello\Desktop\CsharpProjects\TestProject\obj\Debug\net9.0-windows\ref\TestProject.dll
+C:\Users\ebarichello\Desktop\ProgettoSnake\TestProject\obj\Debug\net9.0-windows\TestProject.csproj.AssemblyReference.cache
+C:\Users\ebarichello\Desktop\ProgettoSnake\TestProject\obj\Debug\net9.0-windows\TestProject.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\ebarichello\Desktop\ProgettoSnake\TestProject\obj\Debug\net9.0-windows\TestProject.AssemblyInfoInputs.cache
+C:\Users\ebarichello\Desktop\ProgettoSnake\TestProject\obj\Debug\net9.0-windows\TestProject.AssemblyInfo.cs
+C:\Users\ebarichello\Desktop\ProgettoSnake\TestProject\obj\Debug\net9.0-windows\TestProject.csproj.CoreCompileInputs.cache
+C:\Users\ebarichello\Desktop\ProgettoSnake\TestProject\obj\Debug\net9.0-windows\TestProject.sourcelink.json
+C:\Users\ebarichello\Desktop\ProgettoSnake\TestProject\obj\Debug\net9.0-windows\TestProject.dll
+C:\Users\ebarichello\Desktop\ProgettoSnake\TestProject\obj\Debug\net9.0-windows\refint\TestProject.dll
+C:\Users\ebarichello\Desktop\ProgettoSnake\TestProject\obj\Debug\net9.0-windows\TestProject.pdb
+C:\Users\ebarichello\Desktop\ProgettoSnake\TestProject\bin\Debug\net9.0-windows\TestProject.exe
+C:\Users\ebarichello\Desktop\ProgettoSnake\TestProject\bin\Debug\net9.0-windows\TestProject.deps.json
+C:\Users\ebarichello\Desktop\ProgettoSnake\TestProject\bin\Debug\net9.0-windows\TestProject.runtimeconfig.json
+C:\Users\ebarichello\Desktop\ProgettoSnake\TestProject\bin\Debug\net9.0-windows\TestProject.dll
+C:\Users\ebarichello\Desktop\ProgettoSnake\TestProject\bin\Debug\net9.0-windows\TestProject.pdb
+C:\Users\ebarichello\Desktop\ProgettoSnake\TestProject\bin\Debug\net9.0-windows\System.Data.SQLite.dll
+C:\Users\ebarichello\Desktop\ProgettoSnake\TestProject\obj\Debug\net9.0-windows\TestProj.121896E9.Up2Date
+C:\Users\ebarichello\Desktop\ProgettoSnake\TestProject\obj\Debug\net9.0-windows\TestProject.genruntimeconfig.cache
+C:\Users\ebarichello\Desktop\ProgettoSnake\TestProject\obj\Debug\net9.0-windows\ref\TestProject.dll
+C:\Users\ebarichello\Desktop\Nuova cartella\TestProgetto\bin\Debug\net9.0-windows\TestProject.exe
+C:\Users\ebarichello\Desktop\Nuova cartella\TestProgetto\bin\Debug\net9.0-windows\TestProject.deps.json
+C:\Users\ebarichello\Desktop\Nuova cartella\TestProgetto\bin\Debug\net9.0-windows\TestProject.runtimeconfig.json
+C:\Users\ebarichello\Desktop\Nuova cartella\TestProgetto\bin\Debug\net9.0-windows\TestProject.dll
+C:\Users\ebarichello\Desktop\Nuova cartella\TestProgetto\bin\Debug\net9.0-windows\TestProject.pdb
+C:\Users\ebarichello\Desktop\Nuova cartella\TestProgetto\bin\Debug\net9.0-windows\System.Data.SQLite.dll
+C:\Users\ebarichello\Desktop\Nuova cartella\TestProgetto\obj\Debug\net9.0-windows\TestProject.csproj.AssemblyReference.cache
+C:\Users\ebarichello\Desktop\Nuova cartella\TestProgetto\obj\Debug\net9.0-windows\TestProject.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\ebarichello\Desktop\Nuova cartella\TestProgetto\obj\Debug\net9.0-windows\TestProject.AssemblyInfoInputs.cache
+C:\Users\ebarichello\Desktop\Nuova cartella\TestProgetto\obj\Debug\net9.0-windows\TestProject.AssemblyInfo.cs
+C:\Users\ebarichello\Desktop\Nuova cartella\TestProgetto\obj\Debug\net9.0-windows\TestProject.csproj.CoreCompileInputs.cache
+C:\Users\ebarichello\Desktop\Nuova cartella\TestProgetto\obj\Debug\net9.0-windows\TestProj.121896E9.Up2Date
+C:\Users\ebarichello\Desktop\Nuova cartella\TestProgetto\obj\Debug\net9.0-windows\TestProject.dll
+C:\Users\ebarichello\Desktop\Nuova cartella\TestProgetto\obj\Debug\net9.0-windows\refint\TestProject.dll
+C:\Users\ebarichello\Desktop\Nuova cartella\TestProgetto\obj\Debug\net9.0-windows\TestProject.pdb
+C:\Users\ebarichello\Desktop\Nuova cartella\TestProgetto\obj\Debug\net9.0-windows\TestProject.genruntimeconfig.cache
+C:\Users\ebarichello\Desktop\Nuova cartella\TestProgetto\obj\Debug\net9.0-windows\ref\TestProject.dll
+C:\Users\ebarichello\Desktop\ProgettoSnake\TestProgetto\bin\Debug\net9.0-windows\TestProject.exe
+C:\Users\ebarichello\Desktop\ProgettoSnake\TestProgetto\bin\Debug\net9.0-windows\TestProject.deps.json
+C:\Users\ebarichello\Desktop\ProgettoSnake\TestProgetto\bin\Debug\net9.0-windows\TestProject.runtimeconfig.json
+C:\Users\ebarichello\Desktop\ProgettoSnake\TestProgetto\bin\Debug\net9.0-windows\TestProject.dll
+C:\Users\ebarichello\Desktop\ProgettoSnake\TestProgetto\bin\Debug\net9.0-windows\TestProject.pdb
+C:\Users\ebarichello\Desktop\ProgettoSnake\TestProgetto\bin\Debug\net9.0-windows\System.Data.SQLite.dll
+C:\Users\ebarichello\Desktop\ProgettoSnake\TestProgetto\obj\Debug\net9.0-windows\TestProject.csproj.AssemblyReference.cache
+C:\Users\ebarichello\Desktop\ProgettoSnake\TestProgetto\obj\Debug\net9.0-windows\TestProject.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\ebarichello\Desktop\ProgettoSnake\TestProgetto\obj\Debug\net9.0-windows\TestProject.AssemblyInfoInputs.cache
+C:\Users\ebarichello\Desktop\ProgettoSnake\TestProgetto\obj\Debug\net9.0-windows\TestProject.AssemblyInfo.cs
+C:\Users\ebarichello\Desktop\ProgettoSnake\TestProgetto\obj\Debug\net9.0-windows\TestProject.csproj.CoreCompileInputs.cache
+C:\Users\ebarichello\Desktop\ProgettoSnake\TestProgetto\obj\Debug\net9.0-windows\TestProject.sourcelink.json
+C:\Users\ebarichello\Desktop\ProgettoSnake\TestProgetto\obj\Debug\net9.0-windows\TestProj.121896E9.Up2Date
+C:\Users\ebarichello\Desktop\ProgettoSnake\TestProgetto\obj\Debug\net9.0-windows\TestProject.dll
+C:\Users\ebarichello\Desktop\ProgettoSnake\TestProgetto\obj\Debug\net9.0-windows\refint\TestProject.dll
+C:\Users\ebarichello\Desktop\ProgettoSnake\TestProgetto\obj\Debug\net9.0-windows\TestProject.pdb
+C:\Users\ebarichello\Desktop\ProgettoSnake\TestProgetto\obj\Debug\net9.0-windows\TestProject.genruntimeconfig.cache
+C:\Users\ebarichello\Desktop\ProgettoSnake\TestProgetto\obj\Debug\net9.0-windows\ref\TestProject.dll

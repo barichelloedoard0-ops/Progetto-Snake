@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\ebarichello\\Desktop\\Nuova cartella\\TestProgetto\\TestProject.csproj": {}
+    "c:\\Users\\ebarichello\\Desktop\\ProgettoSnake\\TestProgetto\\Nuova cartella\\TestProgetto\\TestProject.csproj": {}
   },
   "projects": {
-    "C:\\Users\\ebarichello\\Desktop\\Nuova cartella\\TestProgetto\\TestProject.csproj": {
+    "c:\\Users\\ebarichello\\Desktop\\ProgettoSnake\\TestProgetto\\Nuova cartella\\TestProgetto\\TestProject.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\ebarichello\\Desktop\\Nuova cartella\\TestProgetto\\TestProject.csproj",
+        "projectUniqueName": "c:\\Users\\ebarichello\\Desktop\\ProgettoSnake\\TestProgetto\\Nuova cartella\\TestProgetto\\TestProject.csproj",
         "projectName": "TestProject",
-        "projectPath": "C:\\Users\\ebarichello\\Desktop\\Nuova cartella\\TestProgetto\\TestProject.csproj",
+        "projectPath": "c:\\Users\\ebarichello\\Desktop\\ProgettoSnake\\TestProgetto\\Nuova cartella\\TestProgetto\\TestProject.csproj",
         "packagesPath": "C:\\Users\\ebarichello\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\ebarichello\\Desktop\\Nuova cartella\\TestProgetto\\obj\\",
+        "outputPath": "c:\\Users\\ebarichello\\Desktop\\ProgettoSnake\\TestProgetto\\Nuova cartella\\TestProgetto\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

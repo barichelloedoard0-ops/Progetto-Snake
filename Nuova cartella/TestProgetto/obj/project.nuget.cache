@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "vvD9px2qMZU=",
+  "dgSpecHash": "IBk/Q2QYTx4=",
   "success": true,
-  "projectFilePath": "C:\\Users\\ebarichello\\Desktop\\Nuova cartella\\TestProgetto\\TestProject.csproj",
+  "projectFilePath": "c:\\Users\\ebarichello\\Desktop\\ProgettoSnake\\TestProgetto\\Nuova cartella\\TestProgetto\\TestProject.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\ebarichello\\.nuget\\packages\\system.data.sqlite\\2.0.3\\system.data.sqlite.2.0.3.nupkg.sha512"
   ],
