@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO; // NUOVO: Serve per gestire il percorso del file in modo sicuro
 using System.Windows.Forms;
+using Microsoft.Data.Sqlite;
 
 namespace TestProject
 {
@@ -10,6 +12,9 @@ namespace TestProject
         [STAThread]
         public static void Main()
         {
+            // RISOLUZIONE CRASH 1: Inizializza i motori di basso livello di SQLite
+            SQLitePCL.Batteries.Init();
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Form1());
@@ -38,6 +43,8 @@ namespace TestProject
         private bool primoTentativo = true;
         private bool animazioneRecordMostrata = false;
 
+        private string dbPath; // Spostato qui per assegnarlo dopo
+
         private System.Windows.Forms.Timer timerTempo = new System.Windows.Forms.Timer();
         private System.Windows.Forms.Timer timerMovimento = new System.Windows.Forms.Timer();
 
@@ -46,12 +53,15 @@ namespace TestProject
 
         public Form1()
         {
+            // RISOLUZIONE ERRORE 2: Ancoraggio del database alla cartella esatta del gioco
+            dbPath = $"Data Source={Path.Combine(Application.StartupPath, "snake_data.db")}";
+
             ClientSize = new Size(colonne * dimensioneCella, (righe * dimensioneCella) + altezzaHUD);
             BackColor = Color.Black;
             DoubleBuffered = true;
             FormBorderStyle = FormBorderStyle.FixedSingle;
             MaximizeBox = false;
-            Text = "Snake Game - Versione Ottimizzata";
+            Text = "Snake Game - Salvataggio Database";
 
             Paint += DisegnaGioco;
             KeyDown += GestisciInput;
@@ -62,8 +72,72 @@ namespace TestProject
             timerMovimento.Interval = 100;
             timerMovimento.Tick += TickMovimento;
 
+            InizializzaDatabase();
+            record = CaricaRecord();
+            
+            if (record > 0)
+            {
+                primoTentativo = false;
+            }
+
             ResetGioco();
         }
+
+        // --- GESTIONE DATABASE ---
+
+        private void InizializzaDatabase()
+        {
+            using (var connessione = new SqliteConnection(dbPath))
+            {
+                connessione.Open();
+                using (var comando = connessione.CreateCommand())
+                {
+                    comando.CommandText = "CREATE TABLE IF NOT EXISTS Salvataggi (Id INTEGER PRIMARY KEY, RecordCorrente INTEGER);";
+                    comando.ExecuteNonQuery();
+
+                    comando.CommandText = "SELECT COUNT(*) FROM Salvataggi;";
+                    // RISOLUZIONE ERRORE 3: Conversione sicura per evitare InvalidCastException
+                    long conteggio = Convert.ToInt64(comando.ExecuteScalar());
+                    
+                    if (conteggio == 0)
+                    {
+                        comando.CommandText = "INSERT INTO Salvataggi (Id, RecordCorrente) VALUES (1, 0);";
+                        comando.ExecuteNonQuery();
+                    }
+                }
+            }
+        }
+
+        private int CaricaRecord()
+        {
+            using (var connessione = new SqliteConnection(dbPath))
+            {
+                connessione.Open();
+                using (var comando = connessione.CreateCommand())
+                {
+                    comando.CommandText = "SELECT RecordCorrente FROM Salvataggi WHERE Id = 1;";
+                    var risultato = comando.ExecuteScalar();
+                    // Protezione contro i valori nulli (se per caso il DB si svuota)
+                    return risultato != null ? Convert.ToInt32(risultato) : 0;
+                }
+            }
+        }
+
+        private void SalvaRecordInDatabase(int nuovoRecord)
+        {
+            using (var connessione = new SqliteConnection(dbPath))
+            {
+                connessione.Open();
+                using (var comando = connessione.CreateCommand())
+                {
+                    comando.CommandText = "UPDATE Salvataggi SET RecordCorrente = @record WHERE Id = 1;";
+                    comando.Parameters.AddWithValue("@record", nuovoRecord);
+                    comando.ExecuteNonQuery();
+                }
+            }
+        }
+
+        // --- MOTORE DEL GIOCO ---
 
         private void ResetGioco()
         {
@@ -185,6 +259,7 @@ namespace TestProject
                 if (punteggio > record)
                 {
                     record = punteggio;
+                    SalvaRecordInDatabase(record); // Salvataggio istantaneo!
                 }
 
                 if (!primoTentativo && punteggio > recordDaBattereInQuestaPartita && !animazioneRecordMostrata)
