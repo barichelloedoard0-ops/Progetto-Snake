@@ -1,3 +1,4 @@
+#nullable disable
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -7,7 +8,6 @@ using Microsoft.Data.Sqlite;
 
 namespace TestProject
 {
-    // --- PUNTO DI INGRESSO DEL GIOCO ---
     public static class Program
     {
         [STAThread]
@@ -19,8 +19,6 @@ namespace TestProject
             Application.Run(new Form1());
         }
     }
-
-    // --- FINESTRA PRINCIPALE DEL GIOCO ---
     public partial class Form1 : Form
     {
         private int dimensioneCella = 20;
@@ -31,8 +29,6 @@ namespace TestProject
         private List<Point> snake = new List<Point>();
         private Point mela;
         private Random rnd = new Random();
-        
-        // MODIFICA: Introdotta la coda di input per eliminare il lag nei cambi di direzione rapidi
         private Point direzioneCorrente = new Point(0, 0);
         private List<Point> codaInput = new List<Point>();
 
@@ -70,8 +66,6 @@ namespace TestProject
 
             timerTempo.Interval = 1000;
             timerTempo.Tick += AggiornaTempo;
-
-            // MODIFICA: Velocizzato il movimento globale da 100ms a 75ms per renderlo più scattante
             timerMovimento.Interval = 100;
             timerMovimento.Tick += TickMovimento;
 
@@ -85,8 +79,6 @@ namespace TestProject
 
             ResetGioco();
         }
-
-        // --- GESTIONE DATABASE ARCADE ---
 
         private void InizializzaDatabase()
         {
@@ -188,9 +180,6 @@ namespace TestProject
                 }
             }
         }
-
-        // --- MOTORE DEL GIOCO ---
-
         private void ResetGioco()
         {
             snake.Clear();
@@ -201,7 +190,7 @@ namespace TestProject
             snake.Add(new Point(centroX - 2, centroY));
 
             direzioneCorrente = new Point(0, 0);
-            codaInput.Clear(); // Svuota i vecchi comandi rimasti in coda
+            codaInput.Clear(); 
             punteggio = 0;
             secondiTrascorsi = 0;
 
@@ -270,7 +259,6 @@ namespace TestProject
 
         private void GestisciInput(object sender, KeyEventArgs e)
         {
-            // Determina qual è l'ultimo movimento pianificato (nella coda o quello corrente)
             Point ultimaDirezionePianificata = codaInput.Count > 0 ? codaInput[codaInput.Count - 1] : direzioneCorrente;
 
             if (direzioneCorrente.X == 0 && direzioneCorrente.Y == 0 && codaInput.Count == 0)
@@ -291,15 +279,11 @@ namespace TestProject
                 case Keys.Right: if (ultimaDirezionePianificata.X != -1) nuovaDirezione = new Point(1, 0);  break;
                 default: return; // Ignora tasti non validi
             }
-
-            // All'avvio avvia il tempo se si sceglie una direzione valida
             if (direzioneCorrente.X == 0 && direzioneCorrente.Y == 0 && (nuovaDirezione.X != 0 || nuovaDirezione.Y != 0))
             {
                 if (e.KeyCode == Keys.Left) return; 
                 timerTempo.Start();
             }
-
-            // MODIFICA: Aggiunge la mossa alla coda se differisce dall'ultimo movimento pianificato (Max 2 mosse in coda)
             if (nuovaDirezione != ultimaDirezionePianificata && codaInput.Count < 2)
             {
                 codaInput.Add(nuovaDirezione);
@@ -308,7 +292,6 @@ namespace TestProject
 
         private void TickMovimento(object sender, EventArgs e)
         {
-            // MODIFICA: Se ci sono comandi registrati nella coda ad alta velocità, preleva il primo ed eseguilo
             if (codaInput.Count > 0)
             {
                 direzioneCorrente = codaInput[0];
@@ -423,9 +406,7 @@ namespace TestProject
             }
         }
     }
-
-    // --- FINESTRA: CLASSIFICA GRAFICA STILE ARCADE CON DETTAGLIO POSIZIONE ---
-    public class ClassificaForm : Form
+        public class ClassificaForm : Form
     {
         public ClassificaForm(string dbPath, string ultimoNome)
         {
@@ -546,8 +527,6 @@ namespace TestProject
             Controls.Add(btnChiudi);
         }
     }
-
-    // --- FINESTRA POP-UP PER INSERIMENTO INIZIALI ---
     public class InizialiForm : Form
     {
         private string _iniziali = "AAA";
