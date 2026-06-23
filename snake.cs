@@ -7,6 +7,7 @@ using Microsoft.Data.Sqlite;
 
 namespace TestProject
 {
+    // --- PUNTO DI INGRESSO DEL GIOCO ---
     public static class Program
     {
         [STAThread]
@@ -19,6 +20,7 @@ namespace TestProject
         }
     }
 
+    // --- FINESTRA PRINCIPALE DEL GIOCO ---
     public partial class Form1 : Form
     {
         private int dimensioneCella = 20;
@@ -29,8 +31,10 @@ namespace TestProject
         private List<Point> snake = new List<Point>();
         private Point mela;
         private Random rnd = new Random();
-        private Point direzione = new Point(0, 0);
-        private bool direzioneCambiataInQuestoTick = false;
+        
+        // MODIFICA: Introdotta la coda di input per eliminare il lag nei cambi di direzione rapidi
+        private Point direzioneCorrente = new Point(0, 0);
+        private List<Point> codaInput = new List<Point>();
 
         private int punteggio = 0;
         private int secondiTrascorsi = 0;
@@ -41,6 +45,7 @@ namespace TestProject
         private bool primoTentativo = true;
         private bool animazioneRecordMostrata = false;
 
+        private string ultimoNomeGiocatore = "";
         private string dbPath;
 
         private System.Windows.Forms.Timer timerTempo = new System.Windows.Forms.Timer();
@@ -66,6 +71,7 @@ namespace TestProject
             timerTempo.Interval = 1000;
             timerTempo.Tick += AggiornaTempo;
 
+            // MODIFICA: Velocizzato il movimento globale da 100ms a 75ms per renderlo più scattante
             timerMovimento.Interval = 100;
             timerMovimento.Tick += TickMovimento;
 
@@ -80,6 +86,7 @@ namespace TestProject
             ResetGioco();
         }
 
+        // --- GESTIONE DATABASE ARCADE ---
 
         private void InizializzaDatabase()
         {
@@ -127,25 +134,6 @@ namespace TestProject
                     comando.CommandText = "SELECT MAX(Punteggio) FROM Classifica;";
                     var risultato = comando.ExecuteScalar();
                     return risultato != DBNull.Value && risultato != null ? Convert.ToInt32(risultato) : 0;
-                }
-            }
-        }
-
-        private bool VerificaSeEntraInTop5(int punti)
-        {
-            if (punti <= 0) return false;
-
-            using (var connessione = new SqliteConnection(dbPath))
-            {
-                connessione.Open();
-                using (var comando = connessione.CreateCommand())
-                {
-                    comando.CommandText = "SELECT Punteggio FROM Classifica ORDER BY Punteggio DESC LIMIT 1 OFFSET 4;";
-                    var risultato = comando.ExecuteScalar();
-                    if (risultato == null) return true;
-
-                    int quintoPunteggio = Convert.ToInt32(risultato);
-                    return punti > quintoPunteggio;
                 }
             }
         }
@@ -212,10 +200,10 @@ namespace TestProject
             snake.Add(new Point(centroX - 1, centroY));
             snake.Add(new Point(centroX - 2, centroY));
 
-            direzione = new Point(0, 0);
+            direzioneCorrente = new Point(0, 0);
+            codaInput.Clear(); // Svuota i vecchi comandi rimasti in coda
             punteggio = 0;
             secondiTrascorsi = 0;
-            direzioneCambiataInQuestoTick = false;
 
             record = CaricaPrimoPosto();
             recordDaBattereInQuestaPartita = record;
@@ -253,14 +241,12 @@ namespace TestProject
             timerMovimento.Stop();
             timerTempo.Stop();
 
-            if (VerificaSeEntraInTop5(punteggio))
+            using (InizialiForm popUpIniziali = new InizialiForm(punteggio))
             {
-                using (InizialiForm popUpIniziali = new InizialiForm(punteggio))
+                if (popUpIniziali.ShowDialog() == DialogResult.OK)
                 {
-                    if (popUpIniziali.ShowDialog() == DialogResult.OK)
-                    {
-                        SalvaInClassifica(popUpIniziali.Iniziali, punteggio);
-                    }
+                    ultimoNomeGiocatore = popUpIniziali.Iniziali;
+                    SalvaInClassifica(ultimoNomeGiocatore, punteggio);
                 }
             }
 
@@ -284,50 +270,56 @@ namespace TestProject
 
         private void GestisciInput(object sender, KeyEventArgs e)
         {
-            if (direzione.X == 0 && direzione.Y == 0)
+            // Determina qual è l'ultimo movimento pianificato (nella coda o quello corrente)
+            Point ultimaDirezionePianificata = codaInput.Count > 0 ? codaInput[codaInput.Count - 1] : direzioneCorrente;
+
+            if (direzioneCorrente.X == 0 && direzioneCorrente.Y == 0 && codaInput.Count == 0)
             {
                 if (e.KeyCode == Keys.C)
                 {
-                    new ClassificaForm(dbPath).ShowDialog();
+                    new ClassificaForm(dbPath, ultimoNomeGiocatore).ShowDialog();
                     return;
                 }
             }
 
-            if (direzioneCambiataInQuestoTick) return;
-
-            if (direzione.X == 0 && direzione.Y == 0 &&
-               (e.KeyCode == Keys.Up || e.KeyCode == Keys.Down || e.KeyCode == Keys.Left || e.KeyCode == Keys.Right))
+            Point nuovaDirezione = ultimaDirezionePianificata;
+            switch (e.KeyCode)
             {
-                if (e.KeyCode == Keys.Left) return;
+                case Keys.Up:    if (ultimaDirezionePianificata.Y != 1)  nuovaDirezione = new Point(0, -1); break;
+                case Keys.Down:  if (ultimaDirezionePianificata.Y != -1) nuovaDirezione = new Point(0, 1);  break;
+                case Keys.Left:  if (ultimaDirezionePianificata.X != 1)  nuovaDirezione = new Point(-1, 0); break;
+                case Keys.Right: if (ultimaDirezionePianificata.X != -1) nuovaDirezione = new Point(1, 0);  break;
+                default: return; // Ignora tasti non validi
+            }
+
+            // All'avvio avvia il tempo se si sceglie una direzione valida
+            if (direzioneCorrente.X == 0 && direzioneCorrente.Y == 0 && (nuovaDirezione.X != 0 || nuovaDirezione.Y != 0))
+            {
+                if (e.KeyCode == Keys.Left) return; 
                 timerTempo.Start();
             }
 
-            int prevX = direzione.X;
-            int prevY = direzione.Y;
-
-            switch (e.KeyCode)
+            // MODIFICA: Aggiunge la mossa alla coda se differisce dall'ultimo movimento pianificato (Max 2 mosse in coda)
+            if (nuovaDirezione != ultimaDirezionePianificata && codaInput.Count < 2)
             {
-                case Keys.Up:    if (prevY != 1)  direzione = new Point(0, -1); break;
-                case Keys.Down:  if (prevY != -1) direzione = new Point(0, 1);  break;
-                case Keys.Left:  if (prevX != 1)  direzione = new Point(-1, 0); break;
-                case Keys.Right: if (prevX != -1) direzione = new Point(1, 0);  break;
-            }
-
-            if (direzione.X != prevX || direzione.Y != prevY)
-            {
-                direzioneCambiataInQuestoTick = true;
+                codaInput.Add(nuovaDirezione);
             }
         }
 
         private void TickMovimento(object sender, EventArgs e)
         {
-            if (direzione.X == 0 && direzione.Y == 0) return;
+            // MODIFICA: Se ci sono comandi registrati nella coda ad alta velocità, preleva il primo ed eseguilo
+            if (codaInput.Count > 0)
+            {
+                direzioneCorrente = codaInput[0];
+                codaInput.RemoveAt(0);
+            }
 
-            direzioneCambiataInQuestoTick = false;
+            if (direzioneCorrente.X == 0 && direzioneCorrente.Y == 0) return;
 
             if (frameAnimazioneRecord > 0) frameAnimazioneRecord--;
 
-            Point nuovaTesta = new Point(snake[0].X + direzione.X, snake[0].Y + direzione.Y);
+            Point nuovaTesta = new Point(snake[0].X + direzioneCorrente.X, snake[0].Y + direzioneCorrente.Y);
 
             if (nuovaTesta.X < 0 || nuovaTesta.X >= colonne || nuovaTesta.Y < 0 || nuovaTesta.Y >= righe || snake.Contains(nuovaTesta))
             {
@@ -384,7 +376,7 @@ namespace TestProject
 
             g.DrawLine(Pens.White, 0, altezzaHUD, ClientSize.Width, altezzaHUD);
 
-            if (direzione.X == 0 && direzione.Y == 0)
+            if (direzioneCorrente.X == 0 && direzioneCorrente.Y == 0 && codaInput.Count == 0)
             {
                 string msg1 = "USA LE FRECCE PER INIZIARE";
                 string msg2 = "PREMI 'C' PER LA CLASSIFICA";
@@ -432,12 +424,13 @@ namespace TestProject
         }
     }
 
+    // --- FINESTRA: CLASSIFICA GRAFICA STILE ARCADE CON DETTAGLIO POSIZIONE ---
     public class ClassificaForm : Form
     {
-        public ClassificaForm(string dbPath)
+        public ClassificaForm(string dbPath, string ultimoNome)
         {
             Text = "SALA GIOCHI - TOP 5";
-            ClientSize = new Size(350, 320);
+            ClientSize = new Size(350, 390); 
             FormBorderStyle = FormBorderStyle.FixedDialog;
             MaximizeBox = false;
             MinimizeBox = false;
@@ -448,7 +441,7 @@ namespace TestProject
                 Text = "🏆 HIGHSCORES 🏆",
                 Font = new Font("Segoe UI", 16, FontStyle.Bold),
                 ForeColor = Color.Gold,
-                Top = 20, Left = 0, Width = 350,
+                Top = 15, Left = 0, Width = 350,
                 TextAlign = ContentAlignment.TopCenter
             };
             Controls.Add(titolo);
@@ -456,13 +449,14 @@ namespace TestProject
             using (var connessione = new SqliteConnection(dbPath))
             {
                 connessione.Open();
+                
                 using (var comando = connessione.CreateCommand())
                 {
                     comando.CommandText = "SELECT Nome, Punteggio FROM Classifica ORDER BY Punteggio DESC LIMIT 5;";
                     using (var reader = comando.ExecuteReader())
                     {
                         int pos = 1;
-                        int startY = 70;
+                        int startY = 60;
                         while (reader.Read())
                         {
                             string nome = reader.GetString(0);
@@ -480,16 +474,68 @@ namespace TestProject
                             Controls.Add(lblNome);
                             Controls.Add(lblPunti);
 
-                            startY += 35;
+                            startY += 30;
                             pos++;
                         }
                     }
+                }
+
+                Label linea = new Label() {
+                    Text = "---------------------------------------------",
+                    Font = new Font("Consolas", 10, FontStyle.Bold),
+                    ForeColor = Color.FromArgb(60, 60, 60),
+                    Top = 220, Left = 20, Width = 310
+                };
+                Controls.Add(linea);
+
+                if (!string.IsNullOrEmpty(ultimoNome))
+                {
+                    int posizioneGlobale = 1;
+                    int punteggioSalvato = 0;
+
+                    using (var cmdPos = connessione.CreateCommand())
+                    {
+                        cmdPos.CommandText = @"
+                            SELECT 
+                                (SELECT COUNT(*) FROM Classifica WHERE Punteggio > c.Punteggio) + 1 AS Rango,
+                                Punteggio
+                            FROM Classifica c 
+                            WHERE Nome = @nome;";
+                        cmdPos.Parameters.AddWithValue("@nome", ultimoNome);
+                        using (var readerPos = cmdPos.ExecuteReader())
+                        {
+                            if (readerPos.Read())
+                            {
+                                posizioneGlobale = readerPos.GetInt32(0);
+                                punteggioSalvato = readerPos.GetInt32(1);
+                            }
+                        }
+                    }
+
+                    Label lblTuaPos = new Label() { Text = $"{posizioneGlobale}°", Font = new Font("Consolas", 14, FontStyle.Bold), ForeColor = Color.Orange, Top = 245, Left = 40, Width = 55 };
+                    Label lblTuoNome = new Label() { Text = $"{ultimoNome} (TU)", Font = new Font("Consolas", 14, FontStyle.Bold), ForeColor = Color.Orange, Top = 245, Left = 110, Width = 90 };
+                    Label lblTuoPunti = new Label() { Text = punteggioSalvato.ToString("D5"), Font = new Font("Consolas", 14, FontStyle.Bold), ForeColor = Color.Orange, Top = 245, Left = 190, Width = 100, TextAlign = ContentAlignment.TopRight };
+
+                    Controls.Add(lblTuaPos);
+                    Controls.Add(lblTuoNome);
+                    Controls.Add(lblTuoPunti);
+                }
+                else
+                {
+                    Label lblNoGiocato = new Label() {
+                        Text = "FAI UNA PARTITA PER VEDERE IL TUO RANGO",
+                        Font = new Font("Segoe UI", 9, FontStyle.Italic),
+                        ForeColor = Color.Gray,
+                        Top = 248, Left = 0, Width = 350,
+                        TextAlign = ContentAlignment.TopCenter
+                    };
+                    Controls.Add(lblNoGiocato);
                 }
             }
 
             Button btnChiudi = new Button() {
                 Text = "CONTINUA",
-                Top = 260, Left = 125, Width = 100, Height = 35,
+                Top = 315, Left = 125, Width = 100, Height = 35,
                 Font = new Font("Segoe UI", 9, FontStyle.Bold),
                 BackColor = Color.FromArgb(40, 40, 40),
                 ForeColor = Color.White,
@@ -501,6 +547,7 @@ namespace TestProject
         }
     }
 
+    // --- FINESTRA POP-UP PER INSERIMENTO INIZIALI ---
     public class InizialiForm : Form
     {
         private string _iniziali = "AAA";
@@ -510,7 +557,7 @@ namespace TestProject
 
         public InizialiForm(int punteggio)
         {
-            Text = "RECORD DA SALA GIOCHI!";
+            Text = "SALVATAGGIO PERFORMANCE";
             Size = new Size(320, 160);
             FormBorderStyle = FormBorderStyle.FixedDialog;
             MaximizeBox = false;
@@ -520,7 +567,7 @@ namespace TestProject
             ForeColor = Color.White;
 
             Label lbl = new Label() { 
-                Text = "COMPLIMENTI!\nHai fatto " + punteggio + " punti.\nInserisci le tue iniziali:", 
+                Text = "PARTITA TERMINATA!\nHai Totalizzato " + punteggio + " punti.\nRegistra le tue iniziali:", 
                 Top = 15, Left = 20, Width = 260, Height = 50, 
                 Font = new Font("Segoe UI", 10, FontStyle.Bold),
                 TextAlign = ContentAlignment.TopCenter
@@ -557,7 +604,7 @@ namespace TestProject
             {
                 if (string.IsNullOrWhiteSpace(txtIniziali.Text))
                 {
-                    MessageBox.Show("Devi inserire almeno una letterea!", "Errore", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show("Devi inserire almeno una lettera!", "Errore", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     e.Cancel = true;
                 }
                 else
