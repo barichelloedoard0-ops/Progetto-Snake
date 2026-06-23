@@ -1,4 +1,3 @@
-#nullable disable
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -8,6 +7,7 @@ using Microsoft.Data.Sqlite;
 
 namespace TestProject
 {
+    // --- PUNTO DI INGRESSO DEL GIOCO ---
     public static class Program
     {
         [STAThread]
@@ -19,6 +19,8 @@ namespace TestProject
             Application.Run(new Form1());
         }
     }
+
+    // --- FINESTRA PRINCIPALE DEL GIOCO ---
     public partial class Form1 : Form
     {
         private int dimensioneCella = 20;
@@ -29,6 +31,7 @@ namespace TestProject
         private List<Point> snake = new List<Point>();
         private Point mela;
         private Random rnd = new Random();
+        
         private Point direzioneCorrente = new Point(0, 0);
         private List<Point> codaInput = new List<Point>();
 
@@ -66,7 +69,8 @@ namespace TestProject
 
             timerTempo.Interval = 1000;
             timerTempo.Tick += AggiornaTempo;
-            timerMovimento.Interval = 100;
+
+            timerMovimento.Interval = 75;
             timerMovimento.Tick += TickMovimento;
 
             InizializzaDatabase();
@@ -79,6 +83,8 @@ namespace TestProject
 
             ResetGioco();
         }
+
+        // --- GESTIONE DATABASE ARCADE ---
 
         private void InizializzaDatabase()
         {
@@ -180,6 +186,9 @@ namespace TestProject
                 }
             }
         }
+
+        // --- MOTORE DEL GIOCO ---
+
         private void ResetGioco()
         {
             snake.Clear();
@@ -190,7 +199,7 @@ namespace TestProject
             snake.Add(new Point(centroX - 2, centroY));
 
             direzioneCorrente = new Point(0, 0);
-            codaInput.Clear(); 
+            codaInput.Clear();
             punteggio = 0;
             secondiTrascorsi = 0;
 
@@ -277,13 +286,15 @@ namespace TestProject
                 case Keys.Down:  if (ultimaDirezionePianificata.Y != -1) nuovaDirezione = new Point(0, 1);  break;
                 case Keys.Left:  if (ultimaDirezionePianificata.X != 1)  nuovaDirezione = new Point(-1, 0); break;
                 case Keys.Right: if (ultimaDirezionePianificata.X != -1) nuovaDirezione = new Point(1, 0);  break;
-                default: return; // Ignora tasti non validi
+                default: return;
             }
+
             if (direzioneCorrente.X == 0 && direzioneCorrente.Y == 0 && (nuovaDirezione.X != 0 || nuovaDirezione.Y != 0))
             {
                 if (e.KeyCode == Keys.Left) return; 
                 timerTempo.Start();
             }
+
             if (nuovaDirezione != ultimaDirezionePianificata && codaInput.Count < 2)
             {
                 codaInput.Add(nuovaDirezione);
@@ -302,9 +313,22 @@ namespace TestProject
 
             if (frameAnimazioneRecord > 0) frameAnimazioneRecord--;
 
-            Point nuovaTesta = new Point(snake[0].X + direzioneCorrente.X, snake[0].Y + direzioneCorrente.Y);
+            // Calcolo normale della nuova testa provvisoria
+            int prossimoX = snake[0].X + direzioneCorrente.X;
+            int prossimoY = snake[0].Y + direzioneCorrente.Y;
 
-            if (nuovaTesta.X < 0 || nuovaTesta.X >= colonne || nuovaTesta.Y < 0 || nuovaTesta.Y >= righe || snake.Contains(nuovaTesta))
+            // MODIFICA: Effetto Wrapping (Attraversamento dei Muri). 
+            // Se lo snake esce dai bordi della griglia, viene teletrasportato dal lato opposto
+            if (prossimoX < 0) prossimoX = colonne - 1;
+            else if (prossimoX >= colonne) prossimoX = 0;
+
+            if (prossimoY < 0) prossimoY = righe - 1;
+            else if (prossimoY >= righe) prossimoY = 0;
+
+            Point nuovaTesta = new Point(prossimoX, prossimoY);
+
+            // Adesso l'unico modo per fare Game Over è mordere se stessi!
+            if (snake.Contains(nuovaTesta))
             {
                 GestisciGameOver();
                 return;
@@ -406,7 +430,9 @@ namespace TestProject
             }
         }
     }
-        public class ClassificaForm : Form
+
+    // --- FINESTRA: CLASSIFICA GRAFICA STILE ARCADE CON DETTAGLIO POSIZIONE ---
+    public class ClassificaForm : Form
     {
         public ClassificaForm(string dbPath, string ultimoNome)
         {
@@ -527,6 +553,8 @@ namespace TestProject
             Controls.Add(btnChiudi);
         }
     }
+
+    // --- FINESTRA POP-UP PER INSERIMENTO INIZIALI ---
     public class InizialiForm : Form
     {
         private string _iniziali = "AAA";
@@ -562,6 +590,14 @@ namespace TestProject
                 ForeColor = Color.Yellow
             };
 
+            // MODIFICA: Filtra i tasti in tempo reale per bloccare numeri, spazi e caratteri speciali
+            txtIniziali.KeyPress += (s, e) => {
+                if (!char.IsLetter(e.KeyChar) && !char.IsControl(e.KeyChar))
+                {
+                    e.Handled = true; // Blocca l'inserimento del carattere
+                }
+            };
+
             Button btn = new Button() { 
                 Text = "OK", 
                 Top = 75, Left = 160, Width = 80, Height = 30,
@@ -581,14 +617,17 @@ namespace TestProject
         {
             if (DialogResult == DialogResult.OK)
             {
-                if (string.IsNullOrWhiteSpace(txtIniziali.Text))
+                // MODIFICA: Validazione stringente alla chiusura (almeno una lettera reale e niente spazi)
+                string testoPulito = txtIniziali.Text.Trim();
+                
+                if (string.IsNullOrEmpty(testoPulito))
                 {
-                    MessageBox.Show("Devi inserire almeno una lettera!", "Errore", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show("Devi inserire un nome valido composto solo da lettere!", "Errore", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     e.Cancel = true;
                 }
                 else
                 {
-                    _iniziali = txtIniziali.Text.PadRight(3, 'A');
+                    _iniziali = testoPulito.PadRight(3, 'A');
                 }
             }
         }
