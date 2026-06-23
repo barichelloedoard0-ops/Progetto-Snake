@@ -92,7 +92,6 @@ namespace TestProject
                     comando.ExecuteNonQuery();
 
                     comando.CommandText = "SELECT COUNT(*) FROM Salvataggi;";
-                    // RISOLUZIONE ERRORE 3: Conversione sicura per evitare InvalidCastException
                     long conteggio = Convert.ToInt64(comando.ExecuteScalar());
                     
                     if (conteggio == 0)
@@ -262,7 +261,7 @@ namespace TestProject
                 if (punteggio > record)
                 {
                     record = punteggio;
-                    SalvaRecordInDatabase(record); // Salvataggio istantaneo!
+                    SalvaRecordInDatabase(record);
                 }
 
                 if (!primoTentativo && punteggio > recordDaBattereInQuestaPartita && !animazioneRecordMostrata)
