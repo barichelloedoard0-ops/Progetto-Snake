@@ -137,8 +137,6 @@ namespace TestProject
             }
         }
 
-        // --- MOTORE DEL GIOCO ---
-
         private void ResetGioco()
         {
             snake.Clear();
