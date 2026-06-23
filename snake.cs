@@ -12,7 +12,6 @@ namespace TestProject
         [STAThread]
         public static void Main()
         {
-            // RISOLUZIONE CRASH 1: Inizializza i motori di basso livello di SQLite
             SQLitePCL.Batteries.Init();
 
             Application.EnableVisualStyles();
@@ -43,7 +42,7 @@ namespace TestProject
         private bool primoTentativo = true;
         private bool animazioneRecordMostrata = false;
 
-        private string dbPath; // Spostato qui per assegnarlo dopo
+        private string dbPath; 
 
         private System.Windows.Forms.Timer timerTempo = new System.Windows.Forms.Timer();
         private System.Windows.Forms.Timer timerMovimento = new System.Windows.Forms.Timer();
@@ -53,7 +52,6 @@ namespace TestProject
 
         public Form1()
         {
-            // RISOLUZIONE ERRORE 2: Ancoraggio del database alla cartella esatta del gioco
             dbPath = $"Data Source={Path.Combine(Application.StartupPath, "snake_data.db")}";
 
             ClientSize = new Size(colonne * dimensioneCella, (righe * dimensioneCella) + altezzaHUD);
@@ -82,8 +80,6 @@ namespace TestProject
 
             ResetGioco();
         }
-
-        // --- GESTIONE DATABASE ---
 
         private void InizializzaDatabase()
         {
@@ -117,7 +113,6 @@ namespace TestProject
                 {
                     comando.CommandText = "SELECT RecordCorrente FROM Salvataggi WHERE Id = 1;";
                     var risultato = comando.ExecuteScalar();
-                    // Protezione contro i valori nulli (se per caso il DB si svuota)
                     return risultato != null ? Convert.ToInt32(risultato) : 0;
                 }
             }
@@ -187,8 +182,6 @@ namespace TestProject
             timerTempo.Stop();
 
             string messaggioDiFinePartita;
-
-            // Decidiamo il testo del messaggio in base al fatto che abbia battuto il record o no
             if (recordDaBattereInQuestaPartita < punteggio)
             {
                 messaggioDiFinePartita = $"GAME OVER!\n\n★ NUOVO RECORD OTTENUTO: {punteggio} ★\nTempo resistito: {secondiTrascorsi}s\n\nVuoi fare un altro tentativo?";
@@ -198,7 +191,6 @@ namespace TestProject
                 messaggioDiFinePartita = $"GAME OVER!\n\nPunteggio ottenuto: {punteggio}\nRecord attuale: {record}\nTempo resistito: {secondiTrascorsi}s\n\nVuoi fare un altro tentativo?";
             }
 
-            // Mostriamo il messaggio e salviamo la risposta (ora la variabile è unica e sicura!)
             DialogResult risultato = MessageBox.Show(
                 messaggioDiFinePartita,
                 "Fine Partita",
