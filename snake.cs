@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.IO; // NUOVO: Serve per gestire il percorso del file in modo sicuro
+using System.IO;
 using System.Windows.Forms;
 using Microsoft.Data.Sqlite;
 
@@ -186,8 +186,21 @@ namespace TestProject
             timerMovimento.Stop();
             timerTempo.Stop();
 
+            string messaggioDiFinePartita;
+
+            // Decidiamo il testo del messaggio in base al fatto che abbia battuto il record o no
+            if (recordDaBattereInQuestaPartita < punteggio)
+            {
+                messaggioDiFinePartita = $"GAME OVER!\n\n★ NUOVO RECORD OTTENUTO: {punteggio} ★\nTempo resistito: {secondiTrascorsi}s\n\nVuoi fare un altro tentativo?";
+            }
+            else
+            {
+                messaggioDiFinePartita = $"GAME OVER!\n\nPunteggio ottenuto: {punteggio}\nRecord attuale: {record}\nTempo resistito: {secondiTrascorsi}s\n\nVuoi fare un altro tentativo?";
+            }
+
+            // Mostriamo il messaggio e salviamo la risposta (ora la variabile è unica e sicura!)
             DialogResult risultato = MessageBox.Show(
-                $"GAME OVER!\n\nPunteggio ottenuto: {punteggio}\nRecord attuale: {record}\nTempo resistito: {secondiTrascorsi}s\n\nVuoi fare un altro tentativo?",
+                messaggioDiFinePartita,
                 "Fine Partita",
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Information
