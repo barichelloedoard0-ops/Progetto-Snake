@@ -7,7 +7,6 @@ using Microsoft.Data.Sqlite;
 
 namespace TestProject
 {
-    // --- PUNTO DI INGRESSO DEL GIOCO ---
     public static class Program
     {
         [STAThread]
@@ -20,7 +19,6 @@ namespace TestProject
         }
     }
 
-    // --- FINESTRA PRINCIPALE DEL GIOCO ---
     public partial class Form1 : Form
     {
         private int dimensioneCella = 20;
@@ -79,12 +77,9 @@ namespace TestProject
                 primoTentativo = false;
             }
 
-            // CORREZIONE: Rimossa la classifica automatica all'avvio.
-
             ResetGioco();
         }
 
-        // --- GESTIONE DATABASE ARCADE ---
 
         private void InizializzaDatabase()
         {
@@ -96,8 +91,6 @@ namespace TestProject
                     comando.CommandText = "CREATE TABLE IF NOT EXISTS Classifica (Id INTEGER PRIMARY KEY AUTOINCREMENT, Nome TEXT, Punteggio INTEGER);";
                     comando.ExecuteNonQuery();
 
-                    // CORREZIONE: Pulisce i duplicati storici accumulati nelle sessioni precedenti,
-                    // tenendo solo un'unica riga con il punteggio massimo per ciascun nome.
                     comando.CommandText = @"
                         DELETE FROM Classifica 
                         WHERE Id NOT IN (
@@ -175,8 +168,6 @@ namespace TestProject
                     }
                 }
 
-                // CORREZIONE: Se il nome esiste già, cancelliamo i vecchi record associati a quel nome 
-                // e inseriamo il nuovo punteggio record, evitando la duplicazione delle righe.
                 if (recordPrecedente >= 0)
                 {
                     if (punti > recordPrecedente)
@@ -272,8 +263,6 @@ namespace TestProject
                     }
                 }
             }
-
-            // CORREZIONE: Rimossa la classifica automatica a fine partita.
 
             DialogResult risultato = MessageBox.Show(
                 "Vuoi inserire un altro gettone e fare un'altra partita?",
@@ -443,7 +432,6 @@ namespace TestProject
         }
     }
 
-    // --- FINESTRA: CLASSIFICA GRAFICA STILE ARCADE ---
     public class ClassificaForm : Form
     {
         public ClassificaForm(string dbPath)
@@ -513,7 +501,6 @@ namespace TestProject
         }
     }
 
-    // --- FINESTRA POP-UP PER INSERIMENTO INIZIALI ---
     public class InizialiForm : Form
     {
         private string _iniziali = "AAA";
