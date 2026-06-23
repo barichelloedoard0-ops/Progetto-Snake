@@ -248,6 +248,19 @@ namespace TestProject
                 }
             }
 
+            // MODIFICA: Chiede all'utente se vuole vedere la classifica aggiornata
+            DialogResult vediClassifica = MessageBox.Show(
+                "Vuoi visualizzare la classifica per vedere la tua posizione?",
+                "Classifica Globale",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Information
+            );
+
+            if (vediClassifica == DialogResult.Yes)
+            {
+                new ClassificaForm(dbPath, ultimoNomeGiocatore).ShowDialog();
+            }
+
             DialogResult risultato = MessageBox.Show(
                 "Vuoi inserire un altro gettone e fare un'altra partita?",
                 "Arcade Over",
@@ -313,12 +326,9 @@ namespace TestProject
 
             if (frameAnimazioneRecord > 0) frameAnimazioneRecord--;
 
-            // Calcolo normale della nuova testa provvisoria
             int prossimoX = snake[0].X + direzioneCorrente.X;
             int prossimoY = snake[0].Y + direzioneCorrente.Y;
 
-            // MODIFICA: Effetto Wrapping (Attraversamento dei Muri). 
-            // Se lo snake esce dai bordi della griglia, viene teletrasportato dal lato opposto
             if (prossimoX < 0) prossimoX = colonne - 1;
             else if (prossimoX >= colonne) prossimoX = 0;
 
@@ -327,7 +337,6 @@ namespace TestProject
 
             Point nuovaTesta = new Point(prossimoX, prossimoY);
 
-            // Adesso l'unico modo per fare Game Over è mordere se stessi!
             if (snake.Contains(nuovaTesta))
             {
                 GestisciGameOver();
@@ -590,11 +599,10 @@ namespace TestProject
                 ForeColor = Color.Yellow
             };
 
-            // MODIFICA: Filtra i tasti in tempo reale per bloccare numeri, spazi e caratteri speciali
             txtIniziali.KeyPress += (s, e) => {
                 if (!char.IsLetter(e.KeyChar) && !char.IsControl(e.KeyChar))
                 {
-                    e.Handled = true; // Blocca l'inserimento del carattere
+                    e.Handled = true; 
                 }
             };
 
@@ -617,7 +625,6 @@ namespace TestProject
         {
             if (DialogResult == DialogResult.OK)
             {
-                // MODIFICA: Validazione stringente alla chiusura (almeno una lettera reale e niente spazi)
                 string testoPulito = txtIniziali.Text.Trim();
                 
                 if (string.IsNullOrEmpty(testoPulito))
